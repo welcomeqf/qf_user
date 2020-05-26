@@ -1,0 +1,17 @@
+server:
+  port: 8001
+  max-http-header-size: 102400
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: false
+  mapper-locations: classpath:com/eqlee/user/dao/mapper/*.xml
+spring:
+  profiles:
+    active: dev
+  application:
+    name: service-user
+  jmx:
+    enabled: false
+app:
+  workerId: 9
+  dataCenterId: 1

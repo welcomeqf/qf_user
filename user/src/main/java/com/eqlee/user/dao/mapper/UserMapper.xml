@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eqlee.user.dao.UserMapper">
+
+    <select id="queryUserInfo" resultType="com.eqlee.user.entity.query.UserQuery">
+        select a.Id,a.Account,b.RoleName,a.Tel,a.Stopped,a.CName,a.City as 'city' from UserList a
+        join UserRole b on a.SystemRoleId = b.Id where a.AuthId = #{id} and b.AuthId = #{id}
+        order by a.CreateDate desc
+    </select>
+
+
+    <select id="queryPageUserByName" resultType="com.eqlee.user.entity.query.UserQuery">
+        select a.Id,a.Account,b.RoleName,a.Tel,a.Stopped,a.CName,a.City as 'city',a.Status as 'status',
+        a.CompanyId as 'companyId',a.CompanyName as 'companyName',a.CompanyType as 'type'
+        from UserList a
+        join UserRole b on a.SystemRoleId = b.Id
+        <where>
+            1 = 1
+            and a.AuthId = #{id} and b.AuthId = #{id}
+            and a.CompanyType = #{type}
+            <if test="userName != null">
+                <bind name="user_name" value="'%' + userName + '%'"/>
+                and a.Account like #{user_name}
+            </if>
+            <if test="roleName != null">
+                <bind name="role_name" value="'%' + roleName + '%'"/>
+                and b.RoleName like #{role_name}
+            </if>
+            <if test="companyId != 1">
+                and a.CompanyId = #{companyId}
+            </if>
+        </where>
+        order by a.CreateDate desc
+    </select>
+
+    <select id="queryUserByName" resultType="com.eqlee.user.entity.query.User2Query">
+        select a.Id,a.Account,b.RoleName,a.Tel,a.Stopped,a.CName,a.City,a.CompanyName as 'companyName' from UserList a
+        join UserRole b on a.SystemRoleId = b.Id
+        <where>
+            1 = 1
+            and b.Statu = 1
+            and a.AuthId = #{id} and b.AuthId = #{id}
+            <if test="userNameOrRole != null">
+                <bind name="user_role_name" value="'%' + userNameOrRole + '%'"/>
+                and (a.Account like #{user_role_name} or b.RoleName like #{user_role_name})
+            </if>
+        </where>
+        order by a.CreateDate desc
+    </select>
+
+    <select id="queryUserById" resultType="com.eqlee.user.entity.query.UserByIdQuery" parameterType="Long">
+         select a.Id,a.Account,a.CName,a.CompanyId,a.sex,a.Tel,a.IsSuper,b.RoleName,a.Stopped,a.Status,a.Deleted
+          ,a.City,b.Id as 'roleId' from UserList a
+        join UserRole b on a.SystemRoleId = b.Id
+        where a.Id = #{id}
+    </select>
+
+
+    <select id="queryAllAdmin" resultType="com.eqlee.user.entity.bo.UserAdminBo">
+         select a.Id as 'adminId' from UserList a
+        join UserRole b on a.SystemRoleId = b.Id where a.AuthId = #{id} and b.AuthId = #{id}
+        and b.RoleName = #{roleName}
+    </select>
+
+
+    <select id="queryLocalCityUserList" resultType="com.eqlee.user.entity.bo.UserBo">
+        select max(a.Id) as 'id',max(a.Account) as 'account',max(a.CName) as 'cname'
+        from UserList a join SYstemCity b on a.Id = b.UserId
+        <where>
+            1 = 1
+            <!--  导游的id  -->
+            and a.SystemRoleId = '644956576020598784'
+            and a.AuthId = #{id}
+            <if test="city2 == null">
+                <if test="city1 != null">
+                    and b.City = #{city1}
+                </if>
+            </if>
+            <if test="city3 == null">
+                <if test="city2 != null">
+                    and (b.City = #{city1} or b.City = #{city2})
+                </if>
+            </if>
+            <if test="city4 == null">
+                <if test="city3 != null">
+                    and (b.City = #{city1} or b.City = #{city2} or b.City = #{city3})
+                </if>
+            </if>
+            <if test="city5 == null">
+                <if test="city4 != null">
+                    and (b.City = #{city1} or b.City = #{city2} or b.City = #{city3} or b.City = #{city4})
+                </if>
+            </if>
+            <if test="city6 == null">
+                <if test="city5 != null">
+                    and (b.City = #{city1} or b.City = #{city2} or b.City = #{city3} or b.City = #{city4} or b.City = #{city5})
+                </if>
+            </if>
+            <if test="city7 == null">
+                <if test="city6 != null">
+                    and (b.City = #{city1} or b.City = #{city2} or b.City = #{city3} or b.City = #{city4} or b.City = #{city5} or b.City = #{city6})
+                </if>
+            </if>
+            <if test="city8 == null">
+                <if test="city7 != null">
+                    and (b.City = #{city1} or b.City = #{city2} or b.City = #{city3} or b.City = #{city4} or b.City = #{city5} or b.City = #{city6}
+                    or b.City = #{city7})
+                </if>
+            </if>
+            <if test="city9 == null">
+                <if test="city8 != null">
+                    and (b.City = #{city1} or b.City = #{city2} or b.City = #{city3} or b.City = #{city4} or b.City = #{city5} or b.City = #{city6}
+                    or b.City = #{city7} or b.City = #{city8})
+                </if>
+            </if>
+            <if test="city9 != null">
+                and (b.City = #{city1} or b.City = #{city2} or b.City = #{city3} or b.City = #{city4} or b.City = #{city5} or b.City = #{city6}
+                or b.City = #{city7} or b.City = #{city8} or b.City = #{city9})
+            </if>
+        </where>
+        group by a.Id
+    </select>
+
+</mapper>

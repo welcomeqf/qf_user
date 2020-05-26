@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eqlee.user.dao.AuthMapper">
+
+
+    <select id="listAllAuth" resultType="com.eqlee.user.entity.vo.AuthResultVo">
+        select Id as 'id', AccessKey as 'accessKey',AccessKeySecret as 'accessKeySecret',CustomerCode as 'customerCode',
+        CustomerName as 'customerName',Stopped as 'stopped',convert(varchar(100),CreateTime,20)createTime,
+        CreateUserId as 'createUserId',convert(varchar(100),UpdateTime,20)updateTime,UpdateUserId as 'updateUserId'
+        from AccessAuth
+    </select>
+
+
+    <insert id="insertAuth" parameterType="com.eqlee.user.entity.vo.AuthAddVo">
+        insert into AccessAuth(AccessKey,AccessKeySecret,CustomerName) values (#{accessKey},#{accessKeySecret},#{customerName})
+    </insert>
+
+
+</mapper>

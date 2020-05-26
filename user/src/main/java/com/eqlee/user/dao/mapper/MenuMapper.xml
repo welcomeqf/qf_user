@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eqlee.user.dao.MenuMapper">
+
+
+    <select id="queryMenu" resultType="com.eqlee.user.entity.query.WithQuery" parameterType="int">
+        select Id as 'id', MenuName as 'menuName',Parent as 'parent' from Menu
+        where Parent =0 and AuthId = #{id}
+    </select>
+
+
+    <select id="queryListMenu" resultType="com.eqlee.user.entity.query.WithQuery" parameterType="int">
+        select Id as 'id',MenuName as 'menuName',Parent as 'parent'
+        from Menu where Parent in(select Id from Menu where Parent = 0)
+        and AuthId = #{id}
+    </select>
+</mapper>
